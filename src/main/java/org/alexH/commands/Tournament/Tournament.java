@@ -76,7 +76,7 @@ public class Tournament
         EmbedBuilder embedBuilder = new EmbedBuilder()
                 .setColor(new Color(53, 201, 145))
                 .setTimestamp(Instant.now())
-                .setTitle("New Tournament Announcment")
+                .setTitle("New Tournament Announcement")
                 .setDescription("""
                         New Tourney and shit
                         Testing mostly
@@ -93,6 +93,15 @@ public class Tournament
     }
     private void sendRules (TextChannel channel)
     {
+        EmbedBuilder embedBuilder = new EmbedBuilder()
+                .setColor(new Color(53, 201, 145))
+                .setTimestamp(Instant.now())
+                .setTitle("Tournament Rules")
+                .setDescription("""
+                        New Tourney and shit
+                        Testing mostly
+                        """);
+
         channel.sendMessage("""
                 Rules
                 """)
@@ -125,7 +134,7 @@ public class Tournament
 
         for (User user : this.users)
         {
-            stringBuilder.append('\n' + user.getName());
+            stringBuilder.append('\n' + user.getGlobalName());
         }
         return stringBuilder.toString();
     }
