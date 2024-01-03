@@ -2,39 +2,29 @@ package org.alexH.commands.Tournament;
 
 import ca.tristan.easycommands.commands.EventData;
 import ca.tristan.easycommands.commands.slash.SlashExecutor;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.channel.concrete.Category;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.entities.emoji.Emoji;
+import net.dv8tion.jda.api.entities.channel.Channel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.internal.entities.RoleImpl;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.alexH.Main;
 
-import java.awt.*;
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 
 
-public class HostTournament extends SlashExecutor
+public class GetTournamentParticipants extends SlashExecutor
 {
     @Override
     public String getName()
     {
-        return "hosttournament";
+        return "gettournamentparticipants";
     }
 
     @Override
     public String getDescription()
     {
-        return "Host all the channels needed for a tournament";
+        return "Gets the participants in a tournament";
     }
 
     @Override
@@ -54,9 +44,23 @@ public class HostTournament extends SlashExecutor
             return;
         }
 
-        Tournament tournament = new Tournament(data);
-        Main.tournaments.put(tournament.getAnnouncements().getId(),tournament);
+        String name = data.getCommand()
+                .getOptions()
+                .get(0)
+                .getAsString();
 
-        data.reply("Tournament successfully hosted", true).queue();
+        List<GuildChannel> channels = data.getGuild().getCategoriesByName(name, true).get(0).getChannels();
+
+        for (Channel channel : channels)
+        {
+            if (channel.getName().equals("tournament-announcements"))
+            {
+                data.getChannel()
+                        .sendMessage(Main.tournaments.get(channel.getId()).getUsers())
+                        .queue();
+
+                return;
+            }
+        }
     }
 }
